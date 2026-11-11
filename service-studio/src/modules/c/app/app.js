@@ -1,28 +1,20 @@
 import { LightningElement } from "lwc";
 export default class App extends LightningElement {
-  view = "quotes";
+  view = "booking";
   source = "";
-  sourceFile = "QuoteStudioController.cls";
+  sourceFile = "BookingStudioController.cls";
   sourceLoading = false;
   sourceError = "";
   sourceSeq = 0;
   resetVersion = 0;
   files = [
-    "QuoteStudioController.cls",
-    "QuoteStudioControllerTest.cls",
     "BookingStudioController.cls",
     "BookingStudioControllerTest.cls",
-    "quoteBuilder.js",
-    "quoteBuilder.html",
     "appointmentBooking.js",
     "appointmentBooking.html",
     "workflowService.js",
-    "salesQuoteStudio.js",
     "fieldBookingStudio.js",
   ];
-  get quotesHidden() {
-    return this.view !== "quotes";
-  }
   get bookingHidden() {
     return this.view !== "booking";
   }
@@ -32,14 +24,8 @@ export default class App extends LightningElement {
   get sourceHidden() {
     return this.view !== "source";
   }
-  get quoteClass() {
-    return this.view === "quotes" ? "demo-tab active" : "demo-tab";
-  }
   get bookingClass() {
     return this.view === "booking" ? "demo-tab active" : "demo-tab";
-  }
-  get quoteCurrent() {
-    return this.view === "quotes" ? "page" : null;
   }
   get bookingCurrent() {
     return this.view === "booking" ? "page" : null;
@@ -50,14 +36,11 @@ export default class App extends LightningElement {
   get sourceClass() {
     return this.view === "source" ? "nav active" : "nav";
   }
-  get isQuote() {
-    return this.view === "quotes";
-  }
   get isBooking() {
     return this.view === "booking";
   }
   get isDemo() {
-    return this.isQuote || this.isBooking;
+    return this.isBooking;
   }
   get options() {
     return this.files.map((name) => ({ name }));
@@ -67,9 +50,7 @@ export default class App extends LightningElement {
     if (this.view === "source") this.loadSource();
   }
   inspect() {
-    this.sourceFile = this.isBooking
-      ? "BookingStudioController.cls"
-      : "QuoteStudioController.cls";
+    this.sourceFile = "BookingStudioController.cls";
     this.view = "source";
     this.loadSource();
   }

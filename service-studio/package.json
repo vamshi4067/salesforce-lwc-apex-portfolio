@@ -1,7 +1,7 @@
 {
   "name": "service-studio",
   "version": "2.0.0",
-  "description": "Interactive Salesforce LWC portfolio: sales quotes, discount approvals and field-service appointments",
+  "description": "Interactive Salesforce LWC portfolio: field-service appointment booking",
   "main": "index.js",
   "scripts": {
     "build": "node scripts/prepare.mjs && rollup -c && node scripts/package-source.mjs",

@@ -1,20 +1,19 @@
 <template>
   <div class="scenario">
-    <strong>The brief</strong>
+    <strong>Today’s request</strong>
     <p>
-      Maya’s heating needs attention. Choose the right service, find a qualified
-      technician, and reserve a time that is actually free.
+      Maya needs help with her heating. Find a qualified technician and a time for the visit.
     </p>
     <span>Fictional customer · local time</span>
   </div>
   <div class="booking-layout">
     <section class="schedule" aria-label="Appointment booking">
       <div class="heading">
-        <h2>A good time to get it sorted.</h2>
-        <p>Match the job to the person, then find a time.</p>
+        <h2>Find an appointment.</h2>
+        <p>Choose a service and day to see available technicians.</p>
       </div>
       <div class="service-select">
-        <label for="service">What does the customer need?</label
+        <label for="service">Service needed</label
         ><select id="service" onchange={serviceChanged} disabled={busy}>
           <template for:each={serviceOptions} for:item="option"
             ><option key={option.id} value={option.id}>
@@ -74,10 +73,9 @@
       </div>
     </section>
     <aside class="booking-details">
-      <h3>Make it official.</h3>
+      <h3>Confirm the visit.</h3>
       <p class="details-intro">
-        A time is reserved only after you confirm. Availability is checked again
-        when the booking is saved.
+        Your chosen time is checked again when you confirm.
       </p>
       <div class="selection">
         <strong>{chosenService.name}</strong><span>{dateLabel}</span
@@ -140,10 +138,9 @@
         </p>
       </div>
       <div class="try-note">
-        <h4>Try the edge case</h4>
+        <h4>How availability works</h4>
         <p>
-          Book a slot, then look for it again. It disappears from availability.
-          Cancel below and the slot becomes available again.
+          Booked times disappear from the list. Cancel a booking to make the time available again.
         </p>
       </div>
     </aside>

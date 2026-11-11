@@ -5,7 +5,6 @@ await mkdir("dist/assets", { recursive: true });
 await cp("public", "dist", { recursive: true });
 await mkdir("dist/source", { recursive: true });
 for (const [dir, files] of Object.entries({
-  quoteBuilder: ["js", "html"],
   appointmentBooking: ["js", "html"],
   workflowService: ["js"],
 })) {
@@ -16,8 +15,6 @@ for (const [dir, files] of Object.entries({
     );
 }
 for (const name of [
-  "QuoteStudioController",
-  "QuoteStudioControllerTest",
   "BookingStudioController",
   "BookingStudioControllerTest",
 ])
@@ -25,7 +22,7 @@ for (const name of [
     `salesforce/force-app/main/default/classes/${name}.cls`,
     `dist/source/${name}.cls`,
   );
-for (const name of ["salesQuoteStudio", "fieldBookingStudio"])
+for (const name of ["fieldBookingStudio"])
   await copyFile(
     `salesforce/force-app/main/default/lwc/${name}/${name}.js`,
     `dist/source/${name}.js`,

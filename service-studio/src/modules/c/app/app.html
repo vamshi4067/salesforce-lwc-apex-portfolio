@@ -8,7 +8,7 @@
             d="M3 3h12v12H3zM17 3h12v12H17zM3 17h12v12H3z"
           />
           <path fill="#a44d35" d="M17 17h12v12H17z" /></svg
-        ><span>service<span class="brand-light">studio</span></span></a
+        ><span>Service <span class="brand-light">Studio</span></span></a
       >
       <nav aria-label="Project navigation">
         <button
@@ -28,145 +28,31 @@
     </header>
     <section class="intro">
       <div>
-        <h1>
-          Two everyday problems.<br /><span>Thoughtfully built in Salesforce.</span>
-        </h1>
-        <p>
-          Two working examples of how I approach a business problem: build a quote, make an approval decision, and book a service visit.
-        </p>
+        <h1>Book a service visit.</h1>
+        <p>Choose a service, find an available technician, and pick a time that works for you.</p>
       </div>
     </section>
     <main id="main">
       <div class="workspace-heading">
-        <nav class="demo-tabs" aria-label="Live demos">
-          <button
-            class={quoteClass}
-            aria-current={quoteCurrent}
-            data-view="quotes"
-            onclick={changeView}
-          >
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <path d="M5 2.5h7l3 3v12H5zM11.5 2.5v4H15M8 10h4M8 13h4" /></svg
-            >Quote & discount approval</button
-          ><button
-            class={bookingClass}
-            aria-current={bookingCurrent}
-            data-view="booking"
-            onclick={changeView}
-          >
-            <svg viewBox="0 0 20 20" aria-hidden="true">
-              <rect x="3" y="4" width="14" height="13" rx="1" />
-              <path d="M6 2v4M14 2v4M3 8h14m-10 4 2 2 4-4" /></svg
-            >Field-service booking
-          </button>
-        </nav>
+        <nav class="demo-tabs" aria-label="Live demo"><button class={bookingClass} aria-current={bookingCurrent} data-view="booking" onclick={changeView}><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4" width="14" height="13" rx="1"/><path d="M6 2v4M14 2v4M3 8h14m-10 4 2 2 4-4"/></svg>Field-service booking</button></nav>
         <button class="reset" onclick={reset}>Reset demo</button>
       </div>
-      <div hidden={quotesHidden}><c-quote-builder></c-quote-builder></div>
       <div hidden={bookingHidden}>
         <c-appointment-booking></c-appointment-booking>
       </div>
       <section hidden={architectureHidden} class="architecture">
         <h2>Follow the work, from click to record.</h2>
-        <p class="lead">
-          Two business workflows, with the implementation open for inspection.
-          The public demo runs in your browser; the included Salesforce package
-          runs against records in your org.
-        </p>
-        <div class="architecture-columns">
-          <article>
-            <h3>What’s running here</h3>
-            <ol>
-              <li>
-                <strong>Lightning Web Components</strong>
-                <p>
-                  Separate quote and booking components own their forms. The
-                  parent shell handles navigation. Views remain mounted so
-                  switching demos preserves your work.
-                </p>
-              </li>
-              <li>
-                <strong>Asynchronous browser adapter</strong>
-                <p>
-                  A shared JavaScript module simulates server latency,
-                  recalculates prices, validates transitions, checks
-                  availability and keeps fictional records in memory.
-                </p>
-              </li>
-              <li>
-                <strong>Observable outcomes</strong>
-                <p>
-                  Quotes become pending, approved or rejected. A confirmed
-                  appointment removes its time slot; cancelling puts it back.
-                  Reset restores this tab’s data.
-                </p>
-              </li>
-            </ol>
-          </article>
-          <article>
-            <h3>What runs in Salesforce</h3>
-            <ol>
-              <li>
-                <strong>Platform LWCs call Apex</strong>
-                <p>
-                  salesQuoteStudio and fieldBookingStudio use imperative Apex
-                  calls for reads and mutations. They are separate platform
-                  frontends for the same two use cases.
-                </p>
-              </li>
-              <li>
-                <strong>Server-side business rules</strong>
-                <p>
-                  QuoteStudioController owns catalog pricing and the approval
-                  threshold. BookingStudioController locks a slot before
-                  reserving it. Client-supplied totals are never trusted.
-                </p>
-              </li>
-              <li>
-                <strong>Records and permissions</strong>
-                <p>
-                  Custom objects persist quotes, availability and appointments.
-                  Sharing and user-mode database access enforce the caller’s
-                  access; a custom permission gates manager decisions.
-                </p>
-              </li>
-            </ol>
-          </article>
-        </div>
-        <div class="engineering">
-          <h3>Decisions worth inspecting</h3>
-          <div>
-            <strong>Money</strong>
-            <p>
-              The browser calculates in integer cents. Apex uses Decimal with
-              explicit cent rounding. Catalog prices come from the service.
-            </p>
-          </div>
-          <div>
-            <strong>Approval</strong>
-            <p>
-              Up to 10% auto-approves; 10.01–30% requires justification and
-              manager review. Submitted quotes cannot be edited. The public role
-              switch is a simulation.
-            </p>
-          </div>
-          <div>
-            <strong>Scheduling</strong>
-            <p>
-              Availability matches service skills. The public adapter rejects
-              occupied slots. Apex uses FOR UPDATE and a unique slot reference
-              to guard competing requests.
-            </p>
-          </div>
-          <div>
-            <strong>Testing</strong>
-            <p>
-              Node tests cover totals, threshold boundaries, invalid input,
-              repeat decisions, concurrent bookings and cancellation. Apex tests
-              are included for org verification.
-            </p>
-          </div>
-        </div>
+        <p class="lead">A field-service booking workflow, with the implementation open for inspection. The public demo runs in your browser; the included Salesforce package is designed to run against records in your org.</p>
+        <div class="architecture-columns"><article><h3>What’s running here</h3><ol>
+          <li><strong>Lightning Web Components</strong><p>The booking component presents service types, available dates, technician slots and customer details.</p></li>
+          <li><strong>Browser data adapter</strong><p>A JavaScript service filters fictional technicians and times, validates requests and keeps appointments in memory.</p></li>
+          <li><strong>Booking and cancellation</strong><p>A confirmed appointment removes its slot. Cancelling releases it. Reset restores the sample data.</p></li>
+        </ol></article><article><h3>What runs in Salesforce</h3><ol>
+          <li><strong>Platform LWC calls Apex</strong><p>The fieldBookingStudio component calls Apex to retrieve availability and submit or cancel a booking.</p></li>
+          <li><strong>Server-side validation</strong><p>BookingStudioController checks the customer, service and slot, then locks the selected slot before reserving it.</p></li>
+          <li><strong>Records and permissions</strong><p>Custom objects store availability and appointments. Sharing and user-mode database access respect the caller’s access.</p></li>
+        </ol></article></div>
+        <div class="engineering"><h3>Decisions worth inspecting</h3><div><strong>Matching</strong><p>Availability matches the service to a technician’s skills and filters already booked slots.</p></div><div><strong>Concurrency</strong><p>Apex uses FOR UPDATE and a unique active slot reference to guard competing requests.</p></div><div><strong>Testing</strong><p>Node tests cover invalid input, slot matching, concurrent requests and cancellation. Apex tests are included for org verification.</p></div></div>
       </section>
       <section hidden={sourceHidden} class="source-section">
         <div class="source-heading">

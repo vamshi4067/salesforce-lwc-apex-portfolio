@@ -1,5 +1,9 @@
-# Salesforce LWC and Apex Portfolio
+# Salesforce LWC and Apex Projects
 
-Two interactive demonstrations in one project: a sales quote builder with discount approval, and a field-service appointment booking workflow. The public website uses Lightning Web Components with fictional in-memory data. The Salesforce project includes separate LWCs, Apex controllers, custom objects, permission sets, and tests.
+Three independent Salesforce demonstrations, each with a public browser experience and Salesforce platform source:
 
-See [Service Studio setup and source](service-studio/README.md) for the demo walkthrough, local build, Salesforce sandbox deployment, and Netlify setup. For Netlify, set the base directory to `service-studio`.
+- [Service Studio — field-service appointment booking](service-studio/README.md)
+- [Case Management](case-management/README.md)
+- [Customer Onboarding Tracker](onboarding-tracker/README.md)
+
+The browser demos use fictional sample data and do not run Apex. Salesforce deployment and tests require an authenticated sandbox; see each project’s README for setup and limitations.
