@@ -1,0 +1,27 @@
+import { LightningElement } from 'lwc';
+import {listCases,updateCase,resetCases,createCase} from 'c/caseService';
+export default class App extends LightningElement {
+ cases=[]; selectedId='1048'; filter='All'; statusFilter='All'; search=''; draftStatus='New'; draftPriority='High'; note=''; draftOwner='Support queue'; draftFollowUp=''; escalationReason=''; newCase={subject:'',customer:'',description:'',priority:'Medium',owner:'Support queue',followUp:''}; message=''; error=''; tab='workspace';
+ connectedCallback(){this.refresh();}
+ renderedCallback(){const filter=this.template.querySelector("select.filter");if(filter && filter.value!==this.filter)filter.value=this.filter; const status=this.template.querySelector("select.status-filter");if(status && status.value!==this.statusFilter)status.value=this.statusFilter; const search=this.template.querySelector("input.search");if(search && search.value!==this.search)search.value=this.search; const note=this.template.querySelector("textarea.case-note");if(note && note.value!==this.note)note.value=this.note;}
+ refresh(){this.cases=listCases(this.filter,this.statusFilter,this.search).map(c=>({...c,selected:c.id===this.selectedId?'case-row selected':'case-row', priorityClass:'priority '+c.priority.toLowerCase()}));}
+ get selected(){const c=listCases().find(c=>c.id===this.selectedId); return c ? {...c,customerInitial:c.customer.split(' ').map(x=>x[0]).join('')} : {};}
+ get activity(){return this.selected.activity || [];} get followUpText(){const c=this.selected;if(!c.followUp)return 'No follow-up date';const today=new Date().toLocaleDateString('en-CA');return c.status!=='Closed' && c.followUp<today ? 'Overdue · '+c.followUp : 'Follow-up · '+c.followUp;} get escalationLabel(){return this.selected.escalated?'Escalated':'Not escalated';}
+ get notes(){return (this.selected?.notes||[]).map((text,i)=>({id:i,text}));}
+ get count(){return this.cases.length;} get newCount(){return listCases('All','New').length;} get workingCount(){return listCases('All','Working').length;} get closedCount(){return listCases('All','Closed').length;} get isWorkspace(){return this.tab==='workspace';} get isNew(){return this.tab==='new';} get isGuide(){return this.tab==='guide';} get isSource(){return this.tab==='source';}
+ get ownerOptions(){return ['Support queue','Jordan Lee','Sam Rivera','Alex Morgan'].map(value=>({value,selected:value===this.draftOwner}));}
+ get statusOptions(){return ['New','Working','Closed'].map(value=>({value,selected:value===this.draftStatus}));}
+ get priorityOptions(){return ['High','Medium','Low'].map(value=>({value,selected:value===this.draftPriority}));}
+ select(e){this.selectedId=e.currentTarget.dataset.id;let c=this.selected;this.draftStatus=c.status;this.draftPriority=c.priority;this.draftOwner=c.owner;this.draftFollowUp=c.followUp;this.escalationReason='';this.note='';this.message='';this.error='';this.refresh();}
+ filterChanged(e){this.filter=e.target.value;this.refresh();}
+ statusFilterChanged(e){this.statusFilter=e.target.value;this.refresh();}
+ searchChanged(e){this.search=e.target.value;this.refresh();}
+ ownerChanged(e){this.draftOwner=e.target.value;} followUpChanged(e){this.draftFollowUp=e.target.value;} escalationChanged(e){this.escalationReason=e.target.value;} newField(e){this.newCase={...this.newCase,[e.target.name]:e.target.value};}
+ openNew(){this.newCase={subject:'',customer:'',description:'',priority:'Medium',owner:'Support queue',followUp:''};this.error='';this.message='';this.tab='new';}
+ create(){try{const c=createCase(this.newCase);this.selectedId=c.id;this.draftStatus=c.status;this.draftPriority=c.priority;this.draftOwner=c.owner;this.draftFollowUp=c.followUp;this.filter='All';this.statusFilter='All';this.search='';this.tab='workspace';this.message='Case created.';this.error='';this.refresh();}catch(e){this.error=e.message;}}
+ escalate(){try{updateCase(this.selectedId,{escalate:true,escalationReason:this.escalationReason});this.escalationReason='';this.message='Case escalated.';this.error='';this.refresh();}catch(e){this.error=e.message;this.message='';}}
+ statusChanged(e){this.draftStatus=e.target.value;} priorityChanged(e){this.draftPriority=e.target.value;} noteChanged(e){this.note=e.target.value;}
+ save(){try{updateCase(this.selectedId,{status:this.draftStatus,priority:this.draftPriority,owner:this.draftOwner,followUp:this.draftFollowUp,note:this.note});this.note='';this.message='Case updated.';this.error='';this.refresh();}catch(e){this.error=e.message;this.message='';}}
+ reset(){resetCases();this.filter='All';this.statusFilter='All';this.search='';this.selectedId='1048';this.draftStatus='New';this.draftPriority='High';this.draftOwner='Support queue';this.draftFollowUp='';this.escalationReason='';this.note='';this.message='Sample cases restored.';this.error='';this.refresh();}
+ navigate(e){this.tab=e.currentTarget.dataset.tab;}
+}
