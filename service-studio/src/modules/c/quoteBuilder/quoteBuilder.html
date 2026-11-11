@@ -1,0 +1,224 @@
+<template>
+  <div class="scenario">
+    <div>
+      <strong>The brief</strong>
+      <p>
+        Evergreen Home is upgrading two properties. Build an equipment quote,
+        then see how a discount becomes an approval decision.
+      </p>
+    </div>
+    <span>Fictional customer · USD</span>
+  </div>
+  <div class="quote-layout">
+    <section class="quote-sheet" aria-label="Quote builder">
+      <div class="sheet-heading">
+        <div>
+          <h2>Build the right deal.</h2>
+          <p>
+            Evergreen Home <span aria-hidden="true">/</span> Equipment &
+            installation
+          </p>
+        </div>
+        <span class={statusClass}>{status}</span>
+      </div>
+      <div class="quote-meta">
+        <span>Prepared for <strong>Maya Patel</strong></span
+        ><span>{reference}</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <caption class="sr-only">
+            Quote line items
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Product or service</th>
+              <th scope="col">Qty</th>
+              <th scope="col">Unit price</th>
+              <th scope="col">Amount</th>
+              <th scope="col"><span class="sr-only">Remove</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <template for:each={rows} for:item="row"
+              ><tr key={row.id}>
+                <td><strong>{row.name}</strong><small>{row.detail}</small></td>
+                <td>
+                  <input
+                    type="number"
+                    min="1"
+                    max="100"
+                    step="1"
+                    required
+                    value={row.quantity}
+                    data-id={row.id}
+                    aria-label={row.label}
+                    onchange={quantityChanged}
+                    disabled={locked}
+                  />
+                </td>
+                <td>{row.unit}</td>
+                <td class="amount">{row.amount}</td>
+                <td>
+                  <button
+                    class="remove"
+                    data-id={row.id}
+                    onclick={remove}
+                    disabled={locked}
+                    aria-label={row.removeLabel}
+                  >
+                    <svg viewBox="0 0 20 20" aria-hidden="true">
+                      <path d="m6 6 8 8M14 6l-8 8" />
+                    </svg>
+                  </button>
+                </td></tr
+            ></template>
+          </tbody>
+        </table>
+      </div>
+      <div lwc:if={canAdd} class="add-line">
+        <label class="sr-only" for="product">Product to add</label
+        ><select id="product" onchange={productChanged} disabled={busy}>
+          <template for:each={remainingProducts} for:item="product"
+            ><option key={product.id} value={product.id}>
+              {product.label}
+            </option></template
+          ></select
+        ><button class="secondary" onclick={add} disabled={busy}>
+          Add line item
+        </button>
+      </div>
+      <div class="discount-area">
+        <div>
+          <label for="discount">Project discount <span>0–30%</span></label>
+          <div class="discount-input">
+            <input
+              id="discount"
+              type="number"
+              min="0"
+              max="30"
+              step="0.01"
+              required
+              value={discount}
+              onchange={discountChanged}
+              disabled={locked}
+            /><span>%</span>
+          </div>
+        </div>
+        <p>
+          Up to 10% is approved automatically.<br />Above 10% goes to a sales
+          manager.
+        </p>
+      </div>
+      <div lwc:if={requiresApproval} class="reason">
+        <label for="reason">Why this discount?</label
+        ><textarea
+          id="reason"
+          rows="2"
+          minlength="10"
+          maxlength="500"
+          required
+          data-field="reason"
+          oninput={reasonChanged}
+          disabled={locked}
+        ></textarea>
+      </div>
+      <div class="sheet-bottom">
+        <span
+          >Price comes from the catalog.<br />Submitted quotes are locked.</span
+        >
+        <dl>
+          <div>
+            <dt>Subtotal</dt>
+            <dd>{subtotal}</dd>
+          </div>
+          <div>
+            <dt>Discount ({discount}%)</dt>
+            <dd>−{saving}</dd>
+          </div>
+          <div class="grand-total">
+            <dt>Quote total</dt>
+            <dd>{total}</dd>
+          </div>
+        </dl>
+      </div>
+      <div class="submit-row">
+        <p lwc:if={error} class="error" role="alert">{error}</p>
+        <button
+          lwc:if={submitted}
+          class="secondary"
+          onclick={restart}
+          disabled={busy}
+        >
+          Start a new draft</button
+        ><button lwc:else class="primary" onclick={submit} disabled={busy}>
+          {actionLabel}<svg viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M4 10h12m-5-5 5 5-5 5" />
+          </svg>
+        </button>
+      </div>
+    </section>
+    <aside class="decision-rail" aria-label="Approval routing">
+      <h3>A little discount.<br />A clear decision.</h3>
+      <p>Change the percentage and watch the quote take the right path.</p>
+      <div class="policy">
+        <div>
+          <span class="policy-dot auto"></span><strong>0–10%</strong
+          ><span>Automatic approval</span>
+        </div>
+        <div>
+          <span class="policy-dot review"></span><strong>Over 10–30%</strong
+          ><span>Sales manager review</span>
+        </div>
+      </div>
+      <div lwc:if={pending} class="review-panel">
+        <h4>Review as sales manager</h4>
+        <p>
+          Demo role switch. In Salesforce, approval requires a custom
+          permission.
+        </p>
+        <label for="review-note">Decision note</label
+        ><textarea
+          id="review-note"
+          rows="3"
+          maxlength="500"
+          data-field="note"
+          oninput={noteChanged}
+          disabled={busy}
+        ></textarea>
+        <div class="review-actions">
+          <button
+            class="primary"
+            data-decision="Approved"
+            onclick={decide}
+            disabled={busy}
+          >
+            Approve</button
+          ><button
+            class="secondary"
+            data-decision="Rejected"
+            onclick={decide}
+            disabled={busy}
+          >
+            Reject
+          </button>
+        </div>
+      </div>
+      <div lwc:if={submitted} class="activity" role="status">
+        <h4>Quote activity</h4>
+        <ol>
+          <template for:each={events} for:item="event"
+            ><li key={event.id}>{event.label}</li></template
+          >
+        </ol>
+      </div>
+      <div class="try-note">
+        <h4>Try the edge case</h4>
+        <p>
+          Set the discount to 10%, then 10.01%. The first approves immediately;
+          the second needs a person’s decision.
+        </p>
+      </div>
+    </aside>
+  </div>
+</template>

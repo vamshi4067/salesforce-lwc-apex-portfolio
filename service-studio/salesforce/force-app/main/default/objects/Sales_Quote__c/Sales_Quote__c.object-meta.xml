@@ -1,0 +1,1 @@
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><deploymentStatus>Deployed</deploymentStatus><label>Sales Quote</label><nameField><displayFormat>Q-{0000}</displayFormat><label>Sales Quote Number</label><type>AutoNumber</type></nameField><pluralLabel>Sales Quotes</pluralLabel><sharingModel>ReadWrite</sharingModel></CustomObject>

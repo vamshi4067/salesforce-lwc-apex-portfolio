@@ -1,0 +1,217 @@
+<template>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Service Studio home"
+        ><svg viewBox="0 0 32 32" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M3 3h12v12H3zM17 3h12v12H17zM3 17h12v12H3z"
+          />
+          <path fill="#a44d35" d="M17 17h12v12H17z" /></svg
+        ><span>service<span class="brand-light">studio</span></span></a
+      >
+      <nav aria-label="Project navigation">
+        <button
+          class={architectureClass}
+          data-view="architecture"
+          onclick={changeView}
+        >
+          How it works</button
+        ><button class={sourceClass} data-view="source" onclick={changeView}>
+          Source code
+        </button>
+      </nav>
+      <a class="download" href="/service-studio-source.zip" download
+        >Download project<svg viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M5 15 15 5M5 5h10v10" /></svg
+      ></a>
+    </header>
+    <section class="intro">
+      <div>
+        <h1>
+          Two everyday problems.<br /><span>Thoughtfully built in Salesforce.</span>
+        </h1>
+        <p>
+          Two working examples of how I approach a business problem: build a quote, make an approval decision, and book a service visit.
+        </p>
+      </div>
+    </section>
+    <main id="main">
+      <div class="workspace-heading">
+        <nav class="demo-tabs" aria-label="Live demos">
+          <button
+            class={quoteClass}
+            aria-current={quoteCurrent}
+            data-view="quotes"
+            onclick={changeView}
+          >
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M5 2.5h7l3 3v12H5zM11.5 2.5v4H15M8 10h4M8 13h4" /></svg
+            >Quote & discount approval</button
+          ><button
+            class={bookingClass}
+            aria-current={bookingCurrent}
+            data-view="booking"
+            onclick={changeView}
+          >
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <rect x="3" y="4" width="14" height="13" rx="1" />
+              <path d="M6 2v4M14 2v4M3 8h14m-10 4 2 2 4-4" /></svg
+            >Field-service booking
+          </button>
+        </nav>
+        <button class="reset" onclick={reset}>Reset demo</button>
+      </div>
+      <div hidden={quotesHidden}><c-quote-builder></c-quote-builder></div>
+      <div hidden={bookingHidden}>
+        <c-appointment-booking></c-appointment-booking>
+      </div>
+      <section hidden={architectureHidden} class="architecture">
+        <h2>Follow the work, from click to record.</h2>
+        <p class="lead">
+          Two business workflows, with the implementation open for inspection.
+          The public demo runs in your browser; the included Salesforce package
+          runs against records in your org.
+        </p>
+        <div class="architecture-columns">
+          <article>
+            <h3>What’s running here</h3>
+            <ol>
+              <li>
+                <strong>Lightning Web Components</strong>
+                <p>
+                  Separate quote and booking components own their forms. The
+                  parent shell handles navigation. Views remain mounted so
+                  switching demos preserves your work.
+                </p>
+              </li>
+              <li>
+                <strong>Asynchronous browser adapter</strong>
+                <p>
+                  A shared JavaScript module simulates server latency,
+                  recalculates prices, validates transitions, checks
+                  availability and keeps fictional records in memory.
+                </p>
+              </li>
+              <li>
+                <strong>Observable outcomes</strong>
+                <p>
+                  Quotes become pending, approved or rejected. A confirmed
+                  appointment removes its time slot; cancelling puts it back.
+                  Reset restores this tab’s data.
+                </p>
+              </li>
+            </ol>
+          </article>
+          <article>
+            <h3>What runs in Salesforce</h3>
+            <ol>
+              <li>
+                <strong>Platform LWCs call Apex</strong>
+                <p>
+                  salesQuoteStudio and fieldBookingStudio use imperative Apex
+                  calls for reads and mutations. They are separate platform
+                  frontends for the same two use cases.
+                </p>
+              </li>
+              <li>
+                <strong>Server-side business rules</strong>
+                <p>
+                  QuoteStudioController owns catalog pricing and the approval
+                  threshold. BookingStudioController locks a slot before
+                  reserving it. Client-supplied totals are never trusted.
+                </p>
+              </li>
+              <li>
+                <strong>Records and permissions</strong>
+                <p>
+                  Custom objects persist quotes, availability and appointments.
+                  Sharing and user-mode database access enforce the caller’s
+                  access; a custom permission gates manager decisions.
+                </p>
+              </li>
+            </ol>
+          </article>
+        </div>
+        <div class="engineering">
+          <h3>Decisions worth inspecting</h3>
+          <div>
+            <strong>Money</strong>
+            <p>
+              The browser calculates in integer cents. Apex uses Decimal with
+              explicit cent rounding. Catalog prices come from the service.
+            </p>
+          </div>
+          <div>
+            <strong>Approval</strong>
+            <p>
+              Up to 10% auto-approves; 10.01–30% requires justification and
+              manager review. Submitted quotes cannot be edited. The public role
+              switch is a simulation.
+            </p>
+          </div>
+          <div>
+            <strong>Scheduling</strong>
+            <p>
+              Availability matches service skills. The public adapter rejects
+              occupied slots. Apex uses FOR UPDATE and a unique slot reference
+              to guard competing requests.
+            </p>
+          </div>
+          <div>
+            <strong>Testing</strong>
+            <p>
+              Node tests cover totals, threshold boundaries, invalid input,
+              repeat decisions, concurrent bookings and cancellation. Apex tests
+              are included for org verification.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section hidden={sourceHidden} class="source-section">
+        <div class="source-heading">
+          <div>
+            <h2>The implementation, without the mystery.</h2>
+            <p>Browse the actual source, or download the complete project.</p>
+          </div>
+          <label for="source-file"
+            >Project file<select id="source-file" onchange={fileChanged}>
+              <template for:each={options} for:item="file"
+                ><option key={file.name} value={file.name}>
+                  {file.name}
+                </option></template
+              >
+            </select></label
+          >
+        </div>
+        <p class="source-note">
+          .cls files run in Salesforce. Public demo components call
+          workflowService.js in the browser. The download includes object
+          metadata, permission sets, tests and setup instructions.
+        </p>
+        <p lwc:if={sourceLoading} role="status">Loading source…</p>
+        <p lwc:if={sourceError} class="error" role="alert">{sourceError}</p>
+        <pre
+          tabindex="0"
+          aria-label="Project source code"
+        ><code>{source}</code></pre>
+      </section>
+      <div lwc:if={isDemo} class="implementation-bar">
+        <button onclick={inspect}>
+          Inspect the Apex<svg viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M5 15 15 5M5 5h10v10" />
+          </svg>
+        </button>
+      </div>
+    </main>
+    <footer>
+      <p>
+        <span class="sample-dot"></span>Sample data mode
+        <span class="footer-detail"
+          >· Apex behavior is simulated. No Salesforce org is connected.</span
+        >
+      </p>
+      <span>Salesforce LWC · Apex · JavaScript</span>
+    </footer>
+  </div>
+</template>

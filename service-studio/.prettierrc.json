@@ -1,0 +1,13 @@
+{
+  "overrides": [
+    {
+      "files": [
+        "src/modules/**/*.html",
+        "salesforce/force-app/**/lwc/**/*.html"
+      ],
+      "options": {
+        "parser": "lwc"
+      }
+    }
+  ]
+}

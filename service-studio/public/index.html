@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Explore real Salesforce Lightning Web Components through a sales quote approval and field-service booking demo. Inspect the LWC and Apex source."
+    />
+    <meta name="theme-color" content="#263d4a" />
+    <title>Service Studio — Salesforce LWC & Apex</title>
+    <style>
+      @font-face {
+        font-family: Studio;
+        src: url("/assets/studio.woff2");
+        font-display: swap;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #edf1f0;
+        color: #242c32;
+        font-family: Studio, "Segoe UI", sans-serif;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+        caret-color: #263d4a;
+      }
+      ::selection {
+        background: #d9e8ca;
+        color: #242c32;
+      }
+      * {
+        scrollbar-color: #a1b496 #edf1f0;
+        scrollbar-width: thin;
+      }
+      #app {
+        min-height: 100vh;
+      }
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+      html {
+        font-variant-numeric: tabular-nums;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <noscript
+      >This interactive LWC portfolio needs JavaScript enabled.</noscript
+    >
+    <script type="module" src="/assets/app.js"></script>
+  </body>
+</html>

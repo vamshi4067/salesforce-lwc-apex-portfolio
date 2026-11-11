@@ -1,0 +1,3 @@
+# Service Studio
+
+A Salesforce LWC and Apex portfolio for hiring managers and technical reviewers. Two approved workflows: sales quote building and discount approval; field-service appointment booking. Hosting: Netlify. Retain the forest-green workbench visual identity and self-hosted DM Sans. Fictional business: Evergreen Home, an equipment and heating-service supplier. Public runtime: real open-source LWC with an in-memory async adapter. Platform package: independent LWCs, Apex, custom objects and tests. No live org connection, no fabricated owner biography or impact metrics. Visitors must quickly understand the scenario, try decisions, inspect actual source and distinguish simulation from Salesforce execution.

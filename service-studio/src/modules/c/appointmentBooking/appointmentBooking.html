@@ -1,0 +1,179 @@
+<template>
+  <div class="scenario">
+    <strong>The brief</strong>
+    <p>
+      Maya’s heating needs attention. Choose the right service, find a qualified
+      technician, and reserve a time that is actually free.
+    </p>
+    <span>Fictional customer · local time</span>
+  </div>
+  <div class="booking-layout">
+    <section class="schedule" aria-label="Appointment booking">
+      <div class="heading">
+        <h2>A good time to get it sorted.</h2>
+        <p>Match the job to the person, then find a time.</p>
+      </div>
+      <div class="service-select">
+        <label for="service">What does the customer need?</label
+        ><select id="service" onchange={serviceChanged} disabled={busy}>
+          <template for:each={serviceOptions} for:item="option"
+            ><option key={option.id} value={option.id}>
+              {option.name}
+            </option></template
+          >
+        </select>
+        <p>{chosenService.description}</p>
+      </div>
+      <fieldset disabled={busy}>
+        <legend>Choose a day</legend>
+        <div class="days">
+          <template for:each={days} for:item="day"
+            ><button
+              key={day.value}
+              class={day.className}
+              aria-pressed={day.pressed}
+              data-date={day.value}
+              onclick={dayChanged}
+            >
+              <span>{day.weekday}</span><strong>{day.label}</strong>
+            </button></template
+          >
+        </div>
+      </fieldset>
+      <div class="availability-title">
+        <h3>Available appointments</h3>
+        <span>{dateLabel}</span>
+      </div>
+      <p class="timezone">
+        Times are shown in your browser’s local time. Visits take two hours.
+      </p>
+      <div class="slots">
+        <template for:each={slots} for:item="slot"
+          ><button
+            key={slot.id}
+            class={slot.className}
+            aria-pressed={slot.pressed}
+            aria-label={slot.label}
+            data-id={slot.id}
+            onclick={selectSlot}
+            disabled={busy}
+          >
+            <span class="avatar">{slot.initials}</span
+            ><span class="slot-person"
+              ><strong>{slot.name}</strong><small>{slot.specialty}</small></span
+            ><span class="slot-time">{slot.time}</span
+            ><svg viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="10" cy="10" r="7" />
+              <path d="m6.5 10 2.5 2.5 4.5-5" />
+            </svg></button
+        ></template>
+      </div>
+      <div lwc:if={noSlots} class="empty">
+        <h3>That day is fully booked.</h3>
+        <p>Choose another date or service to find an available technician.</p>
+      </div>
+    </section>
+    <aside class="booking-details">
+      <h3>Make it official.</h3>
+      <p class="details-intro">
+        A time is reserved only after you confirm. Availability is checked again
+        when the booking is saved.
+      </p>
+      <div class="selection">
+        <strong>{chosenService.name}</strong><span>{dateLabel}</span
+        ><span>{selectionLabel}</span>
+      </div>
+      <label for="customer">Customer name</label
+      ><input
+        id="customer"
+        name="name"
+        autocomplete="name"
+        required
+        minlength="2"
+        maxlength="100"
+        value={name}
+        oninput={fieldChanged}
+        disabled={busy}
+      />
+      <label for="email">Email address</label
+      ><input
+        id="email"
+        name="email"
+        type="email"
+        autocomplete="email"
+        required
+        maxlength="120"
+        value={email}
+        oninput={fieldChanged}
+        disabled={busy}
+      />
+      <label for="address">Service address</label
+      ><input
+        id="address"
+        name="address"
+        autocomplete="street-address"
+        required
+        minlength="8"
+        maxlength="255"
+        value={address}
+        oninput={fieldChanged}
+        disabled={busy}
+      />
+      <p class="data-note">
+        Use fictional details. This demo keeps data in this tab and sends no
+        emails.
+      </p>
+      <p lwc:if={error} class="error" role="alert">{error}</p>
+      <button class="primary" onclick={book} disabled={busy}>
+        {buttonLabel}<svg viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M4 10h12m-5-5 5 5-5 5" />
+        </svg>
+      </button>
+      <div lwc:if={confirmation} class="confirmation" role="status">
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <path d="m4 10 4 4 8-9" />
+        </svg>
+        <h4>You’re booked, {confirmation.name}.</h4>
+        <p>
+          {confirmation.id} · {confirmation.technician}<br />{confirmation.date}
+          · {confirmation.time}
+        </p>
+      </div>
+      <div class="try-note">
+        <h4>Try the edge case</h4>
+        <p>
+          Book a slot, then look for it again. It disappears from availability.
+          Cancel below and the slot becomes available again.
+        </p>
+      </div>
+    </aside>
+  </div>
+  <section lwc:if={hasBookings} class="bookings">
+    <h3>This session’s appointments</h3>
+    <div class="booking-list">
+      <template for:each={bookingRows} for:item="booking"
+        ><article key={booking.id}>
+          <div>
+            <strong>{booking.serviceName}</strong
+            ><span>{booking.id} · {booking.name}</span>
+          </div>
+          <div>
+            <strong>{booking.dateText} · {booking.time}</strong
+            ><span>{booking.technician}</span>
+          </div>
+          <span class={booking.className}>{booking.status}</span
+          ><button
+            lwc:if={booking.active}
+            class="cancel"
+            data-id={booking.id}
+            aria-label={booking.cancelLabel}
+            onclick={cancel}
+            disabled={busy}
+          >
+            Cancel booking
+          </button>
+        </article></template
+      >
+    </div>
+  </section>
+</template>

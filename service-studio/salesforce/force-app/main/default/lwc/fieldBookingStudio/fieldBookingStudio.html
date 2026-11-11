@@ -1,0 +1,135 @@
+<template
+  ><lightning-card
+    title="Field-service appointment booking"
+    icon-name="standard:service_appointment"
+    ><div class="slds-p-around_medium">
+      <p class="slds-m-bottom_medium">
+        Custom scheduling example. Seed service slots first; this component does
+        not use the licensed Field Service scheduling engine. Times use your
+        Salesforce time zone.
+      </p>
+      <lightning-combobox
+        name="service"
+        label="Service type"
+        value={service}
+        options={options}
+        onchange={filterChanged}
+        disabled={busy}
+      ></lightning-combobox
+      ><lightning-input
+        name="day"
+        type="date"
+        label="Visit date (next five days)"
+        value={day}
+        required
+        onchange={filterChanged}
+        disabled={busy}
+      ></lightning-input
+      ><lightning-spinner
+        lwc:if={busy}
+        alternative-text="Updating availability"
+        size="small"
+      ></lightning-spinner>
+      <p
+        lwc:if={error}
+        role="alert"
+        class="slds-text-color_error slds-m-vertical_medium"
+      >
+        {error}
+      </p>
+      <div class="slds-m-vertical_medium">
+        <p lwc:if={noSlots}>
+          No matching slots. Choose another date or service. An administrator
+          can seed more availability.
+        </p>
+        <template for:each={slotRows} for:item="slot"
+          ><div key={slot.Id} class="slds-box slds-m-bottom_small">
+            <strong>{slot.Technician__c}</strong>
+            <p>
+              <lightning-formatted-date-time
+                value={slot.Start__c}
+                year="numeric"
+                month="short"
+                day="2-digit"
+                hour="2-digit"
+                minute="2-digit"
+              ></lightning-formatted-date-time>
+              –
+              <lightning-formatted-date-time
+                value={slot.End__c}
+                hour="2-digit"
+                minute="2-digit"
+              ></lightning-formatted-date-time>
+            </p>
+            <lightning-button
+              label={slot.label}
+              data-id={slot.Id}
+              onclick={selectSlot}
+              disabled={busy}
+            ></lightning-button></div
+        ></template>
+      </div>
+      <lightning-input
+        name="customer"
+        label="Customer name"
+        value={customer}
+        min-length="2"
+        max-length="100"
+        required
+        onchange={fieldChanged}
+        disabled={busy}
+      ></lightning-input
+      ><lightning-input
+        name="email"
+        type="email"
+        label="Email (no email is sent)"
+        value={email}
+        max-length="120"
+        required
+        onchange={fieldChanged}
+        disabled={busy}
+      ></lightning-input
+      ><lightning-input
+        name="address"
+        label="Service address"
+        value={address}
+        min-length="8"
+        max-length="255"
+        required
+        onchange={fieldChanged}
+        disabled={busy}
+      ></lightning-input
+      ><lightning-button
+        class="slds-m-top_medium"
+        variant="brand"
+        label="Confirm appointment"
+        onclick={confirm}
+        disabled={busy}
+      ></lightning-button
+      ><template for:each={bookingRows} for:item="booking"
+        ><section
+          key={booking.Id}
+          class="slds-m-top_large"
+          aria-label="Session booking"
+        >
+          <h2 class="slds-text-heading_small">
+            {booking.Name}: {booking.Status__c}
+          </h2>
+          <p>{booking.Customer__c}</p>
+          <lightning-formatted-date-time
+            value={booking.Start__c}
+            year="numeric"
+            month="short"
+            day="2-digit"
+            hour="2-digit"
+            minute="2-digit"
+          ></lightning-formatted-date-time
+          ><lightning-button
+            lwc:if={booking.active}
+            data-id={booking.Id}
+            label="Cancel this booking"
+            onclick={cancelBooking}
+            disabled={busy}
+          ></lightning-button></section
+      ></template></div></lightning-card
+></template>

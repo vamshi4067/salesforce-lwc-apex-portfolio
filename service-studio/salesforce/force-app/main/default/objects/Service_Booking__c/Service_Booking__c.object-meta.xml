@@ -1,0 +1,1 @@
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata"><deploymentStatus>Deployed</deploymentStatus><label>Service Booking</label><nameField><displayFormat>APT-{0000}</displayFormat><label>Service Booking Number</label><type>AutoNumber</type></nameField><pluralLabel>Service Bookings</pluralLabel><sharingModel>ReadWrite</sharingModel></CustomObject>
