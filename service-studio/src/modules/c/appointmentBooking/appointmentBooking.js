@@ -44,6 +44,9 @@ export default class AppointmentBooking extends LightningElement {
       label: `${s.name}, ${s.time}`,
     }));
   }
+  get availableCount() { return this.slots.length; }
+  get confirmedCount() { return this.bookings.filter((b) => b.status === "Confirmed").length; }
+  get cancelledCount() { return this.bookings.filter((b) => b.status === "Cancelled").length; }
   get noSlots() {
     return !this.slots.length;
   }

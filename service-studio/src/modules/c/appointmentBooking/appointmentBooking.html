@@ -1,15 +1,12 @@
 <template>
-  <div class="scenario">
-    <strong>Today’s request</strong>
-    <p>
-      Maya needs help with her heating. Find a qualified technician and a time for the visit.
-    </p>
-    <span>Fictional customer · local time</span>
-  </div>
+  <section class="overview" aria-label="Appointment overview">
+    <div class="scenario"><span class="scenario-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><div><span class="scenario-label">Service appointments</span><strong>Appointment workspace</strong><p>Maya needs help with her heating. Find a qualified technician and a suitable time.</p></div><span class="sample-badge">Sample data</span></div>
+    <div class="booking-summary" aria-label="Appointment summary"><div><span>Service</span><strong class="summary-service">{chosenService.name}</strong></div><div><span>Selected day</span><strong class="summary-date">{dateLabel}</strong></div><div><span>Available slots</span><strong>{availableCount}</strong></div><div><span>Confirmed</span><strong>{confirmedCount}</strong></div><div><span>Cancelled</span><strong>{cancelledCount}</strong></div></div>
+  </section>
   <div class="booking-layout">
     <section class="schedule" aria-label="Appointment booking">
       <div class="heading">
-        <h2>Find an appointment.</h2>
+        <h2>Find an appointment</h2>
         <p>Choose a service and day to see available technicians.</p>
       </div>
       <div class="service-select">
@@ -73,7 +70,7 @@
       </div>
     </section>
     <aside class="booking-details">
-      <h3>Confirm the visit.</h3>
+      <h3>Confirm the visit</h3>
       <p class="details-intro">
         Your chosen time is checked again when you confirm.
       </p>
