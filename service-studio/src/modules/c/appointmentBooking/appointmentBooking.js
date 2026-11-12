@@ -19,6 +19,11 @@ export default class AppointmentBooking extends LightningElement {
   bookings = getBookings();
   confirmation = null;
   revision = 0;
+  toastMessage = "";
+  toastTimer;
+  showToast(text) { clearTimeout(this.toastTimer); this.toastMessage = text; this.toastTimer = setTimeout(() => { this.toastMessage = ""; }, 5000); }
+  dismissToast() { clearTimeout(this.toastTimer); this.toastMessage = ""; }
+  disconnectedCallback() { clearTimeout(this.toastTimer); }
   get serviceOptions() {
     return services;
   }
@@ -123,6 +128,7 @@ export default class AppointmentBooking extends LightningElement {
         email: this.email,
         address: this.address,
       });
+      this.showToast("Appointment confirmed.");
       this.bookings = getBookings();
       this.slotId = "";
       this.revision++;
@@ -140,6 +146,7 @@ export default class AppointmentBooking extends LightningElement {
     this.error = "";
     try {
       this.bookings = await cancelAppointment(e.currentTarget.dataset.id);
+      this.showToast("Appointment cancelled. The time is available again.");
       this.confirmation = null;
       this.revision++;
     } catch (err) {

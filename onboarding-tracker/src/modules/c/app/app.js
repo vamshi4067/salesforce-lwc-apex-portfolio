@@ -2,6 +2,10 @@ import {LightningElement} from 'lwc';
 import {getPlan,resetPlan,completeTask,advanceStage,addFollowUp,stages,updateCustomer,updateTask,addBlocker,resolveBlocker} from 'c/onboardingService';
 export default class App extends LightningElement {
  plan={tasks:[]};viewStage='Documents';tab='journey';showForm=false;subject='';due='';editTaskId='';taskOwner='';taskDue='';blockerText='';customerName='';customerContact='';customerOwner='';customerNote='';showCustomer=false;error='';message='';
+ toastMessage=''; toastTimer;
+ showToast(text){clearTimeout(this.toastTimer);this.toastMessage=text;this.toastTimer=setTimeout(()=>{this.toastMessage='';},5000);}
+ dismissToast(){clearTimeout(this.toastTimer);this.toastMessage='';}
+ disconnectedCallback(){clearTimeout(this.toastTimer);}
  connectedCallback(){this.refresh();}
  refresh(){this.plan=getPlan();}
  get isJourney(){return this.tab==='journey';}get isAbout(){return this.tab==='about';}
@@ -22,17 +26,17 @@ export default class App extends LightningElement {
  navigate(e){this.tab=e.currentTarget.dataset.tab;this.message='';this.error='';}
  openCustomer(){this.customerName=this.plan.customer;this.customerContact=this.plan.contact;this.customerOwner=this.plan.owner;this.customerNote='';this.showCustomer=!this.showCustomer;}
  customerField(e){this[e.target.dataset.field]=e.target.value;}
- saveCustomer(){try{updateCustomer({customer:this.customerName,contact:this.customerContact,owner:this.customerOwner,note:this.customerNote});this.showCustomer=false;this.error='';this.message='Customer details saved.';this.refresh();}catch(e){this.error=e.message;}}
+ saveCustomer(){try{updateCustomer({customer:this.customerName,contact:this.customerContact,owner:this.customerOwner,note:this.customerNote});this.showCustomer=false;this.error='';this.message='Customer details saved.';this.showToast('Customer details saved.');this.refresh();}catch(e){this.error=e.message;}}
  editTask(e){const t=this.plan.tasks.find(t=>t.id===e.currentTarget.dataset.id);this.editTaskId=t.id;this.taskOwner=t.owner||this.plan.owner;this.taskDue=t.due;this.error='';}
  editOwner(e){this.taskOwner=e.target.value;} editDue(e){this.taskDue=e.target.value;}
- saveTask(){try{updateTask(this.editTaskId,this.taskOwner,this.taskDue);this.editTaskId='';this.error='';this.message='Task updated.';this.refresh();}catch(e){this.error=e.message;}}
+ saveTask(){try{updateTask(this.editTaskId,this.taskOwner,this.taskDue);this.editTaskId='';this.error='';this.message='Task updated.';this.showToast('Task updated.');this.refresh();}catch(e){this.error=e.message;}}
  cancelTask(){this.editTaskId='';} blockerChanged(e){this.blockerText=e.target.value;}
- addBlockerAction(){try{addBlocker(this.blockerText);this.blockerText='';this.error='';this.message='Blocker added.';this.refresh();}catch(e){this.error=e.message;}}
- resolveBlockerAction(e){try{resolveBlocker(e.currentTarget.dataset.id);this.error='';this.message='Blocker resolved.';this.refresh();}catch(e){this.error=e.message;}}
+ addBlockerAction(){try{addBlocker(this.blockerText);this.blockerText='';this.error='';this.message='Blocker added.';this.showToast('Blocker added.');this.refresh();}catch(e){this.error=e.message;}}
+ resolveBlockerAction(e){try{resolveBlocker(e.currentTarget.dataset.id);this.error='';this.message='Blocker resolved.';this.showToast('Blocker resolved.');this.refresh();}catch(e){this.error=e.message;}}
  toggleForm(){this.showForm=!this.showForm;this.error='';}
  subjectChanged(e){this.subject=e.target.value;}dueChanged(e){this.due=e.target.value;}
- addTask(){try{addFollowUp(this.subject,this.due);this.subject='';this.due='';this.showForm=false;this.message='Follow-up added.';this.error='';this.refresh();}catch(e){this.error=e.message;this.message='';}}
- finish(e){try{completeTask(e.currentTarget.dataset.id);this.message='Task completed.';this.error='';this.refresh();}catch(e){this.error=e.message;}}
- advance(){try{advanceStage();this.viewStage=getPlan().stage;this.message='Moved to '+getPlan().stage+'.';this.error='';this.refresh();}catch(e){this.error=e.message;this.message='';}}
- reset(){resetPlan();this.viewStage=getPlan().stage;this.showForm=false;this.showCustomer=false;this.editTaskId='';this.blockerText='';this.subject='';this.due='';this.error='';this.message='Sample journey restored.';this.refresh();}
+ addTask(){try{addFollowUp(this.subject,this.due);this.subject='';this.due='';this.showForm=false;this.message='Follow-up added.';this.showToast('Follow-up added.');this.error='';this.refresh();}catch(e){this.error=e.message;this.message='';}}
+ finish(e){try{completeTask(e.currentTarget.dataset.id);this.message='Task completed.';this.showToast('Task completed.');this.error='';this.refresh();}catch(e){this.error=e.message;}}
+ advance(){try{advanceStage();this.viewStage=getPlan().stage;this.message='Moved to '+getPlan().stage+'.';this.showToast(this.message);this.error='';this.refresh();}catch(e){this.error=e.message;this.message='';}}
+ reset(){resetPlan();this.viewStage=getPlan().stage;this.showForm=false;this.showCustomer=false;this.editTaskId='';this.blockerText='';this.subject='';this.due='';this.error='';this.message='Sample journey restored.';this.showToast('Sample journey restored.');this.refresh();}
 }

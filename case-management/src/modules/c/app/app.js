@@ -2,6 +2,10 @@ import { LightningElement } from 'lwc';
 import {listCases,updateCase,resetCases,createCase} from 'c/caseService';
 export default class App extends LightningElement {
  cases=[]; selectedId='1048'; filter='All'; statusFilter='All'; summaryFilter='All'; search=''; draftStatus='New'; draftPriority='High'; note=''; draftOwner='Support queue'; draftFollowUp=''; escalationReason=''; newCase={subject:'',customer:'',description:'',priority:'Medium',owner:'Support queue',followUp:''}; message=''; error=''; tab='workspace';
+ toastMessage=''; toastTimer;
+ showToast(text){clearTimeout(this.toastTimer);this.toastMessage=text;this.toastTimer=setTimeout(()=>{this.toastMessage='';},5000);}
+ dismissToast(){clearTimeout(this.toastTimer);this.toastMessage='';}
+ disconnectedCallback(){clearTimeout(this.toastTimer);}
  connectedCallback(){this.refresh();}
  renderedCallback(){const filter=this.template.querySelector("select.filter");if(filter && filter.value!==this.filter)filter.value=this.filter; const status=this.template.querySelector("select.status-filter");if(status && status.value!==this.statusFilter)status.value=this.statusFilter; const search=this.template.querySelector("input.search");if(search && search.value!==this.search)search.value=this.search; const note=this.template.querySelector("textarea.case-note");if(note && note.value!==this.note)note.value=this.note;}
  refresh(){this.cases=listCases(this.filter,this.statusFilter,this.search).filter(c=>this.summaryFilter==='All'||(this.summaryFilter==='Escalated'?c.escalated:c.status===this.summaryFilter)).map(c=>({...c,selected:c.id===this.selectedId?'case-row selected':'case-row', priorityClass:'priority '+c.priority.toLowerCase()}));}
@@ -21,10 +25,10 @@ export default class App extends LightningElement {
  searchChanged(e){this.search=e.target.value;this.refresh();}
  ownerChanged(e){this.draftOwner=e.target.value;} followUpChanged(e){this.draftFollowUp=e.target.value;} escalationChanged(e){this.escalationReason=e.target.value;} newField(e){this.newCase={...this.newCase,[e.target.name]:e.target.value};}
  openNew(){this.newCase={subject:'',customer:'',description:'',priority:'Medium',owner:'Support queue',followUp:''};this.error='';this.message='';this.tab='new';}
- create(){try{const c=createCase(this.newCase);this.selectedId=c.id;this.draftStatus=c.status;this.draftPriority=c.priority;this.draftOwner=c.owner;this.draftFollowUp=c.followUp;this.filter='All';this.statusFilter='All';this.summaryFilter='All';this.search='';this.tab='workspace';this.message='Case created.';this.error='';this.refresh();}catch(e){this.error=e.message;}}
- escalate(){try{updateCase(this.selectedId,{escalate:true,escalationReason:this.escalationReason});this.escalationReason='';this.message='Case escalated.';this.error='';this.refresh();}catch(e){this.error=e.message;this.message='';}}
+ create(){try{const c=createCase(this.newCase);this.selectedId=c.id;this.draftStatus=c.status;this.draftPriority=c.priority;this.draftOwner=c.owner;this.draftFollowUp=c.followUp;this.filter='All';this.statusFilter='All';this.summaryFilter='All';this.search='';this.tab='workspace';this.message='Case created.';this.showToast('Case created.');this.error='';this.refresh();}catch(e){this.error=e.message;}}
+ escalate(){try{updateCase(this.selectedId,{escalate:true,escalationReason:this.escalationReason});this.escalationReason='';this.message='Case escalated.';this.showToast('Case escalated.');this.error='';this.refresh();}catch(e){this.error=e.message;this.message='';}}
  statusChanged(e){this.draftStatus=e.target.value;} priorityChanged(e){this.draftPriority=e.target.value;} noteChanged(e){this.note=e.target.value;}
- save(){try{updateCase(this.selectedId,{status:this.draftStatus,priority:this.draftPriority,owner:this.draftOwner,followUp:this.draftFollowUp,note:this.note});this.note='';this.message='Case updated.';this.error='';this.refresh();}catch(e){this.error=e.message;this.message='';}}
- reset(){resetCases();this.filter='All';this.statusFilter='All';this.summaryFilter='All';this.search='';this.selectedId='1048';this.draftStatus='New';this.draftPriority='High';this.draftOwner='Support queue';this.draftFollowUp='';this.escalationReason='';this.note='';this.message='Sample cases restored.';this.error='';this.refresh();}
+ save(){try{updateCase(this.selectedId,{status:this.draftStatus,priority:this.draftPriority,owner:this.draftOwner,followUp:this.draftFollowUp,note:this.note});this.note='';this.message='Case updated.';this.showToast('Case updated.');this.error='';this.refresh();}catch(e){this.error=e.message;this.message='';}}
+ reset(){resetCases();this.filter='All';this.statusFilter='All';this.summaryFilter='All';this.search='';this.selectedId='1048';this.draftStatus='New';this.draftPriority='High';this.draftOwner='Support queue';this.draftFollowUp='';this.escalationReason='';this.note='';this.message='Sample cases restored.';this.showToast('Sample cases restored.');this.error='';this.refresh();}
  navigate(e){this.tab=e.currentTarget.dataset.tab;}
 }
