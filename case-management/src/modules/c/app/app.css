@@ -53,3 +53,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 
 /* Brief, dismissible confirmation for completed actions. */
 .success-toast{position:fixed;z-index:1000;top:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;width:max-content;max-width:calc(100vw - 32px);padding:12px 14px;background:#2e844a;color:#fff;border-radius:4px;box-shadow:0 4px 14px #0003;font:600 14px/1.4 Arial,Helvetica,sans-serif}.toast-icon{display:grid;place-items:center;flex:0 0 22px;width:22px;height:22px;border:2px solid #fff;border-radius:50%;font-size:14px}.toast-close{margin-left:auto;padding:2px 6px;background:transparent;border:0;color:#fff;font-size:22px;line-height:1;cursor:pointer}.toast-close:focus-visible{outline:2px solid #fff;outline-offset:2px}@media(max-width:600px){.success-toast{top:10px;width:calc(100vw - 24px)}}
+
+/* Selected case is visible even when priority badges use different colors. */
+.case-row.selected,.case-row.selected:hover{background:#fff1f0;border-color:#f1c4c0;box-shadow:inset 4px 0 #ba0517}
+
+/* Match the selected Escalated filter to the red case highlight. */
+.case-counts .summary-tile[data-value="Escalated"].selected{background:#fff1f0;border-color:#ba0517;color:#8e0715}
+.case-counts .summary-tile[data-value="Escalated"].selected:focus-visible{outline-color:#ba0517}
